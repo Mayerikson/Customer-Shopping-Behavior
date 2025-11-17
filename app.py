@@ -3,68 +3,106 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Configuração da página
-st.set_page_config(page_title="Dashboard Varejo", layout="wide")
-st.title("📊 Dashboard de Comportamento de Compra")
-st.markdown("Análise interativa do dataset *Customer Shopping Behavior*")
+st.set_page_config(page_title="Dashboard Varejo - 7 Perguntas", layout="wide")
+st.title("📊 Dashboard de Comportamento de Compra – 7 Perguntas de Negócio")
+st.markdown("Respostas interativas com base no dataset *Customer Shopping Behavior*.")
 
-# Carregar dados
 @st.cache_data
 def load_data():
     return pd.read_csv("shopping_behavior_updated.csv")
 
 df = load_data()
 
-# Sidebar com filtros
-st.sidebar.header("Filtros")
-categorias = st.sidebar.multiselect("Categoria", sorted(df["Category"].unique()), default=df["Category"].unique())
-generos = st.sidebar.multiselect("Gênero", sorted(df["Gender"].unique()), default=df["Gender"].unique())
-faixa_etaria = st.sidebar.slider("Idade", int(df["Age"].min()), int(df["Age"].max()), (18, 70))
+# Sidebar com filtros obrigatórios
+with st.sidebar:
+    st.header("🎛️ Filtros Obrigatórios")
+    categorias = st.multiselect("Categoria", sorted(df["Category"].unique()), default=df["Category"].unique())
+    generos = st.multiselect("Gênero", sorted(df["Gender"].unique()), default=df["Gender"].unique())
+    faixa_etaria = st.slider("Idade", int(df["Age"].min()), int(df["Age"].max()), (18, 70))
+    aplicar = st.button("🔍 Aplicar Filtros")
 
-# Aplicar filtros
+# Validação de filtros
+if not aplicar:
+    st.warning("⚠️ Por favor, selecione os filtros desejados e clique em **'Aplicar Filtros'** para visualizar as respostas.")
+    st.stop()
+
 df_filtrado = df[
     (df["Category"].isin(categorias)) &
     (df["Gender"].isin(generos)) &
     (df["Age"].between(faixa_etaria[0], faixa_etaria[1]))
 ]
 
-# Métricas principais
-st.subheader("📈 Métricas Gerais")
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Total de Compras", len(df_filtrado))
-col2.metric("Valor Total (USD)", f"${df_filtrado['Purchase Amount (USD)'].sum():,.2f}")
-col3.metric("Ticket Médio", f"${df_filtrado['Purchase Amount (USD)'].mean():,.2f}")
-col4.metric("Top Categoria", df_filtrado["Category"].mode()[0])
-
-# Gráficos
-st.subheader("📊 Visualizações")
-col1, col2 = st.columns(2)
-
-with col1:
-    st.write("**Valor de Compra por Categoria**")
-    fig, ax = plt.subplots()
-    sns.boxplot(data=df_filtrado, x="Category", y="Purchase Amount (USD)", ax=ax)
-    plt.xticks(rotation=45)
+# Função auxiliar para exibir gráficos
+def plot_box(data, x, y, title):
+    fig, ax = plt.subplots(figsize=(6, 4))
+    sns.boxplot(data=data, x=x, y=y, ax=ax)
+    ax.set_title(title)
     st.pyplot(fig)
 
-with col2:
-    st.write("**Distribuição de Compras por Gênero**")
-    fig, ax = plt.subplots()
-    df_filtrado["Gender"].value_counts().plot(kind="pie", autopct="%1.1f%%", ax=ax)
-    ax.set_ylabel("")
-    st.pyplot(fig)
+# Pergunta 1: Probabilidade de ser Big Spender
+st.header("1️⃣ Probabilidade de ser Big Spender")
+big_spenders = df_filtrado[df_filtrado["Purchase Amount (USD)"] > df_filtrado["Purchase Amount (USD)"].quantile(0.8)]
+prob = len(big_spenders) / len(df_filtrado)
+st.metric("Probabilidade estimada", f"{prob:.1%}")
+st.write("Baseado no percentil 80 do valor de compra.")
 
-# Top 10 estados
-st.subheader("🗺️ Top 10 Estados por Número de Compras")
-top_estados = df_filtrado["Location"].value_counts().head(10)
-st.bar_chart(top_estados)
+# Pergunta 2: Segmentos de Clientes
+st.header("2️⃣ Segmentos de Clientes (KMeans)")
+from sklearn.cluster import KMeans
+X = df_filtrado[["Age", "Purchase Amount (USD)"]].dropna()
+kmeans = KMeans(n_clusters=3, random_state=42)
+df_filtrado = df_filtrado.copy()
+df_filtrado["Cluster"] = kmeans.fit_predict(X)
+st.write("Clusters baseados em idade e valor de compra:")
+plot_box(df_filtrado, "Cluster", "Purchase Amount (USD)", "Valor por Cluster")
 
-# Tabela interativa
-st.subheader("🧑‍💻 Visualizar Dados Filtrados")
-st.dataframe(df_filtrado)
+# Pergunta 3: Estações com mais vendas
+st.header("3️⃣ Estações com Mais Vendas")
+vendas_por_estacao = df_filtrado.groupby("Season")["Purchase Amount (USD)"].sum()
+st.bar_chart(vendas_por_estacao)
 
-# Insights
-st.subheader("💡 Insights Rápidos")
-st.write("- Pessoas acima de 50 anos tendem a gastar mais em **Outerwear**.")
-st.write("- **Footwear** tem maior valor médio de compra.")
-st.write("- **California** e **New York** lideram em número de compras.")
+# Pergunta 4: Categorias com maior valor médio
+st.header("4️⃣ Categorias com Maior Valor Médio")
+valor_medio = df_filtrado.groupby("Category")["Purchase Amount (USD)"].mean().sort_values(ascending=False)
+st.bar_chart(valor_medio)
+
+# Pergunta 5: Persona Ideal para Campanhas
+st.header("5️⃣ Persona Ideal para Campanhas de Alto Valor")
+persona = df_filtrado[df_filtrado["Purchase Amount (USD)"] > df_filtrado["Purchase Amount (USD)"].quantile(0.9)]
+st.write("Perfil dos 10% maiores gastadores:")
+st.write(persona[["Age", "Gender", "Category", "Season", "Purchase Amount (USD)"]].describe())
+
+# Pergunta 6: Relação entre Idade e Valor Gasto
+st.header("6️⃣ Relação entre Idade e Valor Gasto")
+fig, ax = plt.subplots()
+sns.scatterplot(data=df_filtrado, x="Age", y="Purchase Amount (USD)", hue="Category", ax=ax)
+st.pyplot(fig)
+
+# Pergunta 7: Previsão de Big Spenders com LightGBM
+st.header("7️⃣ Previsão de Big Spenders (LightGBM + SHAP)")
+from lightgbm import LGBMClassifier
+from sklearn.model_selection import train_test_split
+from shap import explainer, summary_plot
+
+# Preparação
+df_model = df_filtrado.copy()
+df_model["BigSpender"] = (df_model["Purchase Amount (USD)"] > df_model["Purchase Amount (USD)"].quantile(0.8)).astype(int)
+X = pd.get_dummies(df_model[["Age", "Gender", "Category", "Season"]], drop_first=True)
+y = df_model["BigSpender"]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Modelo
+model = LGBMClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# SHAP
+exp = explainer.TreeExplainer(model)
+shap_values = exp.shap_values(X_test)
+
+st.write("Importância das features para prever Big Spenders:")
+summary_plot(shap_values[1], X_test, plot_type="bar", show=False)
+st.pyplot(plt.gcf())
+
+# Rodapé
+st.markdown("---")
+st.markdown("Desenvolvido com ❤️ usando Streamlit | Dataset: Customer Shopping Behavior")
