@@ -62,8 +62,8 @@ class UIConfig:
     PLOT_SIZE_LARGE: tuple = (12, 6)
     
     # Animações
-    SPINNER_TEXT_MODEL: str = "🤖 Treinando modelo de Machine Learning..."
-    SPINNER_TEXT_CLUSTER: str = "📊 Realizando segmentação..."
+    SPINNER_TEXT_MODEL: str = " Treinando modelo de Machine Learning..."
+    SPINNER_TEXT_CLUSTER: str = " Realizando segmentação..."
 
 # Instâncias globais
 DASHBOARD_CONFIG = DashboardConfig()
