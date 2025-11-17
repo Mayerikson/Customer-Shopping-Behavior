@@ -4,6 +4,7 @@ Versão 2.0 - Refatorada e Otimizada
 """
 import streamlit as st
 import warnings
+import pandas as pd
 warnings.filterwarnings('ignore')
 
 # Imports dos módulos
@@ -12,15 +13,7 @@ from utils.data_loader import load_and_validate_data, calcular_estatisticas_gera
 from utils.data_processor import aplicar_filtros, calcular_estatisticas_filtradas
 from utils.formatters import formatar_moeda, formatar_numero, formatar_percentual
 from components.sidebar import criar_sidebar
-from components.questions import (
-    pergunta_1_probabilidade_big_spender,
-    pergunta_2_segmentos_consumidores,
-    pergunta_3_vendas_intensas,
-    pergunta_4_categorias_maior_valor,
-    pergunta_5_persona_ideal,
-    pergunta_6_relacao_caracteristicas,
-    pergunta_7_modelo_preditivo
-)
+from components.questions import render_questions
 
 # ===========================
 # CONFIGURAÇÃO DA PÁGINA
@@ -128,10 +121,10 @@ with col4:
 filtros = criar_sidebar(df)
 
 # Validação de ação
-if filtros['limpar']:
-    st.rerun()
+if 'aplicar_filtro' not in st.session_state:
+    st.session_state.aplicar_filtro = False
 
-if not filtros['aplicar']:
+if not st.session_state.aplicar_filtro:
     st.info(
         "💡 **Dica:** Selecione os filtros desejados na barra lateral "
         "e clique em **'Aplicar'** para visualizar as análises."
@@ -203,14 +196,8 @@ with col4:
 st.markdown("---")
 st.header("🎯 Respostas às 7 Perguntas de Negócio")
 
-# Renderizar cada pergunta
-pergunta_1_probabilidade_big_spender(df_filtrado)
-pergunta_2_segmentos_consumidores(df_filtrado)
-pergunta_3_vendas_intensas(df_filtrado)
-pergunta_4_categorias_maior_valor(df_filtrado)
-pergunta_5_persona_ideal(df_filtrado)
-pergunta_6_relacao_caracteristicas(df_filtrado)
-pergunta_7_modelo_preditivo(df_filtrado)
+# Renderizar todas as perguntas
+render_questions(df_filtrado)
 
 # ===========================
 # EXPORTAR DADOS
