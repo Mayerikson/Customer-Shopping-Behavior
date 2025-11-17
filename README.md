@@ -26,7 +26,7 @@ Simular como uma rede varejista pode identificar quem são os "big spenders", se
 ##  Estrutura do Repositório
 
 
-```markdown
+
 Estrutura do Repositório:
 - LICENSE
 - README.md
