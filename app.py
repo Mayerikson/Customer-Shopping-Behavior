@@ -86,7 +86,7 @@ except (FileNotFoundError, ValueError) as e:
 # ===========================
 stats_gerais = calcular_estatisticas_gerais(df)
 
-st.markdown("### 📈 Visão Geral do Dataset")
+st.markdown("###  Visão Geral do Dataset")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -128,7 +128,7 @@ if 'aplicar_filtro' not in st.session_state:
 
 if not st.session_state.aplicar_filtro:
     st.info(
-        "💡 **Dica:** Selecione os filtros desejados na barra lateral "
+        " **Dica:** Selecione os filtros desejados na barra lateral "
         "e clique em **'Aplicar'** para visualizar as análises."
     )
     st.stop()
@@ -158,7 +158,7 @@ if len(df_filtrado) == 0:
 stats_filtradas = calcular_estatisticas_filtradas(df, df_filtrado)
 
 st.markdown("---")
-st.subheader("📊 Visão Geral dos Dados Filtrados")
+st.subheader(" Visão Geral dos Dados Filtrados")
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -196,7 +196,7 @@ with col4:
 # 7 PERGUNTAS DE NEGÓCIO
 # ===========================
 st.markdown("---")
-st.header("🎯 Respostas às 7 Perguntas de Negócio")
+st.header(" Respostas às 7 Perguntas de Negócio")
 
 # Renderizar todas as perguntas
 render_questions(df_filtrado)
@@ -205,13 +205,13 @@ render_questions(df_filtrado)
 # EXPORTAR DADOS
 # ===========================
 st.markdown("---")
-st.subheader("💾 Exportar Dados Filtrados")
+st.subheader(" Exportar Dados Filtrados")
 
 col1, col2 = st.columns([3, 1])
 
 with col1:
     st.info(
-        f"📋 {formatar_numero(len(df_filtrado))} registros prontos para exportação"
+        f" {formatar_numero(len(df_filtrado))} registros prontos para exportação"
     )
 
 with col2:
@@ -230,7 +230,7 @@ with col2:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #666;'>
-    Desenvolvido com ❤️ usando Streamlit | Dataset: Customer Shopping Behavior<br>
+    Desenvolvido com  usando Streamlit | Dataset: Customer Shopping Behavior<br>
     <small>Dashboard v2.0 - Análise Avançada de Varejo | Código Refatorado e Otimizado</small>
 </div>
 """, unsafe_allow_html=True)
