@@ -14,12 +14,12 @@ def criar_sidebar(df: pd.DataFrame) -> dict:
         Dicionário com valores dos filtros selecionados
     """
     with st.sidebar:
-        st.header("🎛️ Filtros de Análise")
+        st.header(" Filtros de Análise")
         st.markdown("Ajuste os filtros abaixo para segmentar sua análise:")
         
         # Filtro de Categoria
         categorias = st.multiselect(
-            "📦 Categoria de Produto",
+            " Categoria de Produto",
             sorted(df["Category"].unique()),
             default=df["Category"].unique(),
             help="Selecione uma ou mais categorias"
@@ -27,7 +27,7 @@ def criar_sidebar(df: pd.DataFrame) -> dict:
         
         # Filtro de Gênero
         generos = st.multiselect(
-            "👤 Gênero",
+            " Gênero",
             sorted(df["Gender"].unique()),
             default=df["Gender"].unique()
         )
@@ -37,7 +37,7 @@ def criar_sidebar(df: pd.DataFrame) -> dict:
         max_age = int(df["Age"].max())
         
         faixa_etaria = st.slider(
-            "🎂 Faixa Etária",
+            " Faixa Etária",
             min_age,
             max_age,
             (min_age, max_age),
@@ -46,7 +46,7 @@ def criar_sidebar(df: pd.DataFrame) -> dict:
         
         # Filtro de Estação
         estacoes = st.multiselect(
-            "🌦️ Estação do Ano",
+            " Estação do Ano",
             sorted(df["Season"].unique()),
             default=df["Season"].unique()
         )
@@ -68,21 +68,21 @@ def criar_sidebar(df: pd.DataFrame) -> dict:
             
         with col1:
             st.button(
-                "🔍 Aplicar", 
+                " Aplicar", 
                 type="primary", 
                 use_container_width=True,
                 on_click=set_aplicar
             )
         with col2:
             st.button(
-                "🔄 Limpar", 
+                " Limpar", 
                 use_container_width=True,
                 on_click=set_limpar
             )
         
         # Informações adicionais
         st.markdown("---")
-        st.markdown("### 📊 Sobre os Dados")
+        st.markdown("###  Sobre os Dados")
         st.info(f"""
         **Dataset:** Customer Shopping Behavior
         
