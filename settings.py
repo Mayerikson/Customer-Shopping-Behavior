@@ -7,10 +7,10 @@ class Config:
     
     # UI
     PAGE_TITLE: str = "Dashboard Varejo - 7 Perguntas"
-    PAGE_ICON: str = ""
+    PAGE_ICON: str = "🛒"
     PRIMARY_COLOR: str = "#1f77b4"
-    SPINNER_MODEL: str = " Treinando modelo de Machine Learning..."
-    SPINNER_CLUSTER: str = " Realizando segmentação..."
+    SPINNER_MODEL: str = "🤖 Treinando modelo de Machine Learning..."
+    SPINNER_CLUSTER: str = "📊 Realizando segmentação..."
     
     # Data
     REQUIRED_COLS: list = None
@@ -45,4 +45,3 @@ class ModelParams:
 
 CFG = Config()
 MODEL_CFG = ModelParams()
-
