@@ -25,13 +25,28 @@ Simular como uma rede varejista pode identificar quem são os "big spenders", se
 
 ##  Estrutura do Repositório
 
+```markdown
+
+Ou ainda em formato de lista simples:
+
+```markdown
 Estrutura do Repositório:
-- `app.py` - Dashboard interativo (Streamlit Cloud)
-- `requirements.txt` - Dependências
-- `shopping_behavior_updated.csv` - Dados brutos
-- `varejo.ipynb` - Análise completa (EDA + modelagem)
-- `README.md` - Este arquivo
-- `figures/` - Gráficos exportados
+- LICENSE
+- README.md
+- app.py
+- charts.py
+- clustering.py
+- data_loader.py
+- data_processor.py
+- formatters.py
+- prediction.py
+- questions.py
+- requirements.txt
+- settings.py
+- shopping_behavior_updated.csv
+- sidebar.py
+- varejo (2).ipynb
+
 
 
 
