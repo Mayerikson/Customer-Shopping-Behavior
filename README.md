@@ -26,6 +26,7 @@ Simular como uma rede varejista pode identificar quem são os "big spenders", se
 ##  Estrutura do Repositório
 
 Customer-Shopping-Behavior/
+
 ├── app.py                          # Dashboard interativo (Streamlit Cloud)
 ├── requirements.txt                # Dependências
 ├── shopping_behavior_updated.csv   # Dados brutos
