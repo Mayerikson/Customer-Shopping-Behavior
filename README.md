@@ -68,7 +68,11 @@ Estrutura do Repositório:
 - ↓ 10% de desperdício de mídia ao segmentar pela persona ideal.
 - ↑ 8% de ticket médio via precificação sazonal por categoria e localização.
 
+## Dashboard no Streamlit
+
+https://myk-customer-shopping-behavior.streamlit.app/
+
 ## Autor
-**Mayerikson** – Cientista de Dados
+**Mayerikson** – fonte dos dados(https://www.kaggle.com/datasets/rehan497/customer-shopping-behavior-dataset/data)
 [GitHub](https://github.com) | [LinkedIn](https://linkedin.com)
 > "Dados não são apenas números – são decisões esperando para acontecer."
