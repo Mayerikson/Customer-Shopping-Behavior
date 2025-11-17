@@ -106,3 +106,86 @@ st.pyplot(plt.gcf())
 # Rodapé
 st.markdown("---")
 st.markdown("Desenvolvido com ❤️ usando Streamlit | Dataset: Customer Shopping Behavior")
+
+
+
+# ==========================
+# 🎯 ABA: Respostas Automáticas às 7 Perguntas
+# ==========================
+st.markdown("---")
+st.header("🎯 Respostas Automáticas às 7 Perguntas de Negócio")
+
+# Cada pergunta tem seu próprio filtro interno
+def big_spenders_auto(df):
+    return df[df["Purchase Amount (USD)"] > df["Purchase Amount (USD)"].quantile(0.8)]
+
+def top_category_by_season(df):
+    return df.groupby(["Season", "Category"])["Purchase Amount (USD)"].mean().reset_index()
+
+def top_persona(df):
+    top_10 = df["Purchase Amount (USD)"].quantile(0.9)
+    return df[df["Purchase Amount (USD)"] > top_10]
+
+# Pergunta 1
+with st.expander("1️⃣ Probabilidade de um cliente ser Big Spender"):
+    bs = big_spenders_auto(df)
+    prob = len(bs) / len(df)
+    st.metric("Probabilidade (percentil 80)", f"{prob:.1%}")
+    st.write("Base: todo o dataset (sem filtros do usuário)")
+
+# Pergunta 2
+with st.expander("2️⃣ Segmentos naturais de consumidores"):
+    from sklearn.cluster import KMeans
+    X = df[["Age", "Purchase Amount (USD)"]].dropna()
+    kmeans = KMeans(n_clusters=3, random_state=42)
+    df["Cluster"] = kmeans.fit_predict(X)
+    st.write("Clusters baseados em Idade × Valor de Compra")
+    fig, ax = plt.subplots()
+    sns.scatterplot(data=df, x="Age", y="Purchase Amount (USD)", hue="Cluster", palette="Set2", ax=ax)
+    st.pyplot(fig)
+
+# Pergunta 3
+with st.expander("3️⃣ Estações e locais com vendas mais intensas"):
+    season_state = df.groupby(["Season", "Location"])["Purchase Amount (USD)"].sum().reset_index()
+    top_season_state = season_state.sort_values("Purchase Amount (USD)", ascending=False).head(10)
+    st.write("Top 10 combinações Estação × Localização")
+    st.dataframe(top_season_state)
+
+# Pergunta 4
+with st.expander("4️⃣ Categorias que geram maior valor médio"):
+    cat_avg = df.groupby("Category")["Purchase Amount (USD)"].mean().sort_values(ascending=False)
+    st.bar_chart(cat_avg)
+
+# Pergunta 5
+with st.expander("5️⃣ Persona ideal para campanhas de alto valor"):
+    persona = top_persona(df)
+    st.write("Perfil dos 10% maiores gastadores")
+    st.dataframe(persona[["Age", "Gender", "Category", "Season", "Purchase Amount (USD)"]].describe())
+
+# Pergunta 6
+with st.expander("6️⃣ Relação entre características do cliente e valor gasto"):
+    fig, ax = plt.subplots()
+    sns.scatterplot(data=df, x="Age", y="Purchase Amount (USD)", hue="Category", alpha=0.7, ax=ax)
+    st.pyplot(fig)
+
+# Pergunta 7
+with st.expander("7️⃣ Previsão dos 20% maiores gastadores (LightGBM + SHAP)"):
+    from lightgbm import LGBMClassifier
+    from sklearn.model_selection import train_test_split
+    from shap import TreeExplainer, summary_plot
+
+    df_model = df.copy()
+    df_model["BigSpender"] = (df_model["Purchase Amount (USD)"] > df_model["Purchase Amount (USD)"].quantile(0.8)).astype(int)
+    X = pd.get_dummies(df_model[["Age", "Gender", "Category", "Season"]], drop_first=True)
+    y = df_model["BigSpender"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+    model = LGBMClassifier(random_state=42)
+    model.fit(X_train, y_train)
+
+    explainer = TreeExplainer(model)
+    shap_values = explainer.shap_values(X_test)
+
+    st.write("Importância das features (SHAP)")
+    summary_plot(shap_values[1], X_test, plot_type="bar", show=False)
+    st.pyplot(plt.gcf())
