@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+lightgbm
+shap
+openpyxl # Para compatibilidade com pandas
+xlrd # Para compatibilidade com pandas
