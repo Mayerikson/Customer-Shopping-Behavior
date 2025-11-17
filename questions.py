@@ -88,7 +88,7 @@ def pergunta_2_segmentos_consumidores(df: pd.DataFrame):
                 cluster_stats['Max_Compra'] = cluster_stats['Max_Compra'].apply(formatar_moeda)
                 st.dataframe(cluster_stats, use_container_width=True, hide_index=True)
             else:
-                st.warning("⚠️ Dados insuficientes para clustering")
+                st.warning(" Dados insuficientes para clustering")
         
         with col2:
             if not cluster_stats.empty:
@@ -161,11 +161,11 @@ def pergunta_5_persona_ideal(df: pd.DataFrame):
         persona_data = preparar_dados_top_gastadores(df, percentil_top/100)
         
         if persona_data is None:
-            st.warning("⚠️ Dados insuficientes para análise de persona")
+            st.warning(" Dados insuficientes para análise de persona")
             return
         
         st.info(
-            f"📊 Analisando os **{100-percentil_top}% maiores gastadores** "
+            f" Analisando os **{100-percentil_top}% maiores gastadores** "
             f"(compras acima de {formatar_moeda(persona_data['threshold'])})"
         )
         
@@ -316,7 +316,7 @@ def pergunta_7_modelo_preditivo(df: pd.DataFrame):
                     )
                 
                 # SHAP Analysis
-                st.subheader("📊 Importância das Features (SHAP)")
+                st.subheader(" Importância das Features (SHAP)")
                 
                 shap_values = calcular_shap_values(model, dados['X_test'])
                 
@@ -331,10 +331,10 @@ def pergunta_7_modelo_preditivo(df: pd.DataFrame):
                 plt.close()
                 
                 # Relatório detalhado
-                with st.expander("📄 Ver Relatório Detalhado"):
+                with st.expander(" Ver Relatório Detalhado"):
                     st.text(metricas['report'])
                     
-                    st.markdown("### 💡 Interpretação")
+                    st.markdown("###  Interpretação")
                     st.info("""
                     **Como interpretar os resultados:**
                     
