@@ -27,7 +27,7 @@ def load_and_validate_data(
         # Para fins de teste no ambiente local, vamos criar um dataframe mock
         # Na implantação real, o arquivo deve existir
         if "shopping_behavior_updated.csv" in csv_path:
-            st.warning(f"⚠️ Arquivo de dados não encontrado em {csv_path}. Criando dados de exemplo.")
+            st.warning(f" Arquivo de dados não encontrado em {csv_path}. Criando dados de exemplo.")
             
             data = {
                 "Category": ["Clothing", "Footwear", "Clothing", "Accessories", "Footwear"],
@@ -57,12 +57,12 @@ def load_and_validate_data(
             
             return df
         
-        raise FileNotFoundError(f"❌ Arquivo não encontrado: {csv_path}")
+        raise FileNotFoundError(f" Arquivo não encontrado: {csv_path}")
     
     try:
         df = pd.read_csv(csv_path)
     except Exception as e:
-        raise ValueError(f"❌ Erro ao ler CSV: {str(e)}")
+        raise ValueError(f" Erro ao ler CSV: {str(e)}")
     
     # Validação de colunas
     missing_cols = [col for col in required_cols if col not in df.columns]
